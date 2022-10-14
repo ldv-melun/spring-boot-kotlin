@@ -1,0 +1,373 @@
+= Première application
+Olivier Capuozzo; Frédéric Varni
+v1.3, 2021-10-15: Version asciidoc
+:description: Cours et TP autour de Spring Boot
+:icons: font
+:listing-caption: Listing
+:toc-title: Table des matières
+:toc:
+:toclevels: 2
+:source-highlighter: coderay
+
+== Une première application Spring Boot
+
+=== Créer le projet
+
+Dans Spring Initializr effectuez les choix suivants :
+
+image::sb-first-kotlin-initalizr.png[sbfirst.spring.initialzr]
+
+* Paramètres :
+** Project : Maven Project
+** Language : Kotlin
+** Spring Boot version : 2.7.4
+** Métadonnées du projet :
+*** Group : fr.vincimelun
+*** Artifact : sbfirst
+*** Name : Spring Boot First
+*** Description : Première application Spring Boot
+*** Package name : fr.vincimelun.sbfirst
+*** Packaging : jar
+*** Java (JVM) version : 17
+* Dependencies :
+** Spring Boot DevTools
+** Spring Web
+** Thymeleaf
+
+Spring Initilizr génére un fichier `.zip`, `sbfirst.zip`, qui contient le projet prêt à l'emploi.
+
+.Arborescence du projet `sbfirst`
+[literal%nowrap]
+----
+sbfirst
+├── .gitignore
+├── HELP.md
+├── mvnw
+├── mvnw.cmd
+├── pom.xml <1>
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── fr
+    │   │       └── vincimelun
+    │   │           └── sbfirst
+    │   │               └── SpringBootFirstApplication.kt <2>
+    │   └── resources
+    │       ├── application.properties <3>
+    │       ├── static <4>
+    │       └── templates <5>
+    └── test
+        └── java
+            └── fr
+                └── vincimelun
+                    └── sbfirst
+                        └── SpringBootFirstApplicationTests.kt
+----
+<1> Fichier `Maven` définissant le projet
+<2> L'application principale (fonction main)
+<3> Le fichier de configuration principal de l'application
+<4> Le dossier pour stocker les éléments fixes comme les images ou les feuilles de style css
+<5> Le dossier de stockage des templates Freemarker ou Thymeleaf
+
+La classe principale de l'application ressemble à celles qu'on peut écrire pour n'importe quelle application en mode ligne de commande : une fonction `main` statique qui permet d'instancier et de lancer l'application.
+
+.La classe principale de l'application
+[source,kotlin]
+----
+package fr.vincimelun.sbfirst
+
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+
+@SpringBootApplication
+class SpringBootFirstApplication
+
+fun main(args: Array<String>)  { <1>
+	runApplication<SpringBootFirstApplication>(*args) <2>
+}
+
+----
+<1> Fonction `main` de l'application
+<2> Construction et lancement de l'application
+
+Le fichier `application.properties` est vide, il ne contiendra que les éléments particuliers à la configuration de l'application comme les informations de connexion aux bases de données, ou la configuration du moteur de templates. Par défaut tout doit fonctionner sur les `conventions`.
+
+=== Configurer le projet
+
+.src/main/resources/application.properties
+[source,properties]
+----
+# vide
+----
+
+=== Un premier contrôleur
+
+Un contrôleur est une classe qui est annotée avec `@Controller` et qui contient des méthodes associées à des URI, ces methodes peuvent être associée à des annotations comme `@GetMapping`, `@PostMapping`, ... ou `@RequestMapping` plus générique. Les paramètres passés à ces méthodes sont variables et interprêtés par le moteur de Spring MVC.
+
+Par convention les contrôleurs sont créés dans le package `controller` de l'application
+
+.Un contrôleur simple
+[source,kotlin]
+----
+package fr.vincimelun.sbfirst.controller
+
+import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
+import org.springframework.ui.set
+import org.springframework.web.bind.annotation.GetMapping
+
+@Controller
+class MainController { <1>
+
+    @GetMapping("/") <2>
+    fun index(model: Model): String { <3>
+        model["title"] = "Hello world !" <4>
+        return "main/hello" <5>
+    }
+
+}
+----
+<1> Par convention, les classes contrôleurs sont préfixées par `Controller`.
+<2> Route correspondant pour la méthode GET et l'URI `/`
+<3> Pour passer des données au template associé à l'URI, il suffit de déclarer un objet de type `Model` dans les paramètres de la méthode. Attention cet objet est instancié par Spring, il n'y a qu'à l'utiliser. On peut considérer un objet de type `Model` comme un `Map`.
+<4> Ajoute une valeur au modèle. L'index `title` sert de clé pour y loger une valeur (ici la chaine de caractère _"Hello world !"_)
+<5> Nom du template associé, sans son extention `.html`
+
+.Un template simple (/src/main/templates/main/index.html)
+[source, thymeleaftemplatesfragmentexpressions]
+----
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"> <1>
+ <head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Titre du document</title> <2>
+ </head>
+ <body>
+  <h1 th:text="${title}">Un titre</h1> <3>
+ </body>
+</html>
+----
+
+<1> Ajout de l'espace de nom du template `thymeleaf` - attribut de la balise `html`
+<2> Le title du header est défini par la variable `${title}` présente dans le contexte. La valeur actuelle `Titre du document` est fictive, placée ici en guise de documentation, car elle sera remplacée par la valeur de l'expression `th:text="${title}"` inscrite en tant qu'attribut de la balise `h1`.
+<3> Dans le body, la balise `h1` est définie de la même manière. La valeur de `${title}` est définie par la méthode `index` de `MainController`.
+
+[NOTE]
+====
+L'expression `th:text` permet de définir un contenu textuel pour un élément HTML.
+
+D'autres expressions `thymeleaf` seront présentées ultérieurement.
+====
+
+== Gérer les données d'entrée
+
+Conformément à l'architecture applicative 3 tiers web, c'est une méthode dite _contrôleur_ qui prend en charge l'exploitation des données transmises par le client HTTP (le tiers distant qui est à l'origine de l'interaction)
+
+TIP: Terminologie : les méthodes associées à des _Routes_ dans une classe _Controller_ sont appelées *_méthodes d'action_* ou *méthodes contrôleur*. Par extension, on nomme parfois de telles méthodes des *_contrôleurs_*, et leur classe des "classes contrôleur".
+
+== Auto-injection de l'objet HttpServletRequest
+
+Pour accéder aux données transmises avec la requête HTTP, le contrôleur principal qui appelle les (méthodes) contrôleurs, a la possibilité de passer en argument un objet de type _javax.servlet.http.HttpServletRequest_ (entre autres)
+
+Un objet de la classe _HttpServletRequest_ détient les informations transmises par le client HTTP à l'origine de la requête (par exemple en provenance d'un navigateur à l'autre bout de la planète)
+
+Un contrôleur qui a besoin d'exploiter les données du cleint HTTP devra simplement *déclarer, dans ses paramètres, le ou les objets dont il a besoin*. Un objet de la classe _HttpServletRequest_ est riche d'information (IP du client, les données transmises...). Il existe d'autres types d'objets plus spécialisé (_Session_, ...)
+
+TIP: Le mécanisme qui consiste à fournir des objets en argument est appelé *injection de dépendance* : c'est une des façons de réaliser l'inversion de contrôle par les frameworks (_IOC_). Voir à ce sujet https://fr.wikipedia.org/wiki/Inversion_de_contr%C3%B4le[wikipedia IOC _inversion of control_]
+
+C'est par l'intermédiaire de cet objet de type _HttpServletRequest_ que nous pourrons accéder aux données brutes de la session utilisateur. D'autres façons de faire seront présentées ultérieurement.
+
+.Exemple d'injection
+[source, kotlin]
+----
+
+  @GetMapping("/hello")
+  fun hello(request: HttpServletRequest): String { <1>
+    // code ici
+  }
+
+----
+
+<1> On remarquera, dans la signature de la méthode, la déclaration du paramètre permettant à Spring de réaliser l'injection.
+
+
+== Données d'entrée implicites
+
+Ce sont les données transmises par le client dans la partie entête HTTP. Ces données sont accessibles *via* l'objet `HttpServletRequest` qui dispose de méthodes bien pratiques pour interroger ces données.
+
+* `getMethod(): String`
+Returns the name of the HTTP method with which this request was made, for example, GET, POST, or PUT.
+
+* `isRequestedSessionIdFromCookie(): Boolean`
+Checks whether the requested session ID came in as a cookie.
+
+*  `getLocale()`
+Returns the preferred `Locale` that the client will accept content in, based on the _Accept-Language header_. If the client request doesn't provide an Accept-Language header, this method returns the default locale for the server.
+
+*  `getCharacterEncoding()`
+Returns the name of the character encoding used in the body of this request. This method returns null if the request does not specify a character encoding
+
+* `getRemoteAddr()`
+Returns the Internet Protocol (IP) address of the client or last proxy that sent the request.
+
+* ...
+
+voir https://tomcat.apache.org/tomcat-7.0-doc/servletapi/javax/servlet/http/HttpServletRequest.html[API Request]
+
+
+== Données d'entrée explicites
+
+Typiquement ce sont celles en provenance d'une requête `HTTP`
+
+=== Données sous la forme de couples `clé=valeur`
+
+* de type `GET` comme composantes https://en.wikipedia.org/wiki/Query_string[QueryString] de l'*URL*
+* de type `POST` *formulaire HTML ou non*, passé dans le corps de la requête HTTP,
+
+Exemple. Soit l'URL suivante (un `GET`) :
+
+----
+http://51.68.231.195:8080/hello?nom=Django
+----
+
+Côté application web, la méthode prenant en charge cette route devra interroger la donnée d'entrée nommée `nom` (clé du couple `nom=Django`)
+
+[source, kotlin]
+----
+   @GetMapping("/hello")
+   fun index(request : HttpServletRequest): String {
+        var nom: String = request.getParameter("nom") ?: "" <1>
+        // faire quelque chose avec nom
+    }
+
+----
+<1> La méthode `getParameter` permet, comme son nom l'indique, de récupérer l'éventuelle valeur d'un paramètre (rend `null` sinon)
++
+Nous utilisons ici l'opérateur _Elvis_ (`?:`) afin de définir une valeur par défaut
+
+Cette façon de faire convient aussi bien aux données en provenance de la *query string* (méthode `GET`) que celle en postée par un formulaire (méthode `POST` par exemple).
+
+IMPORTANT: La méthode `getParameter` ne doit être utilisée que si on est sûr d'obtenir, *au plus une seule valeur*. Dans le cas contraire nous utiliserons la méthode https://tomcat.apache.org/tomcat-7.0-doc/servletapi/javax/servlet/ServletRequest.html#getParameterValues(java.lang.String)[`getParameterValues`] qui retourne un tableau de String.
+
+=== Données intégrées à l'url
+
+Exemple d'appel. On souhaite modifier une donnée :
+
+----
+http://quizbe.org/question/edit/42 <1>
+----
+
+<1> Attention, l'URL *n'est pas* `http://quizbe.org/question/edit?id=42`
+
+Pour extraire de l'URL les parties variables, nous les encadrons d'accolades et utilisons l'annotation *`@PathVariable`*
+
+.Exemple d'exploitation de données d'URL
+[source, kotlin]
+----
+  @GetMapping("/question/edit/{id}") <1>
+  fun showUpdateForm(@PathVariable("id") id: Long, model: Model, request: HttpServletRequest): String { <2>
+     val questionDto = questionService.findQuestionDtoById(id)
+     model["questionDto"] = questionDto
+     return "/question/add-update-question"
+  }
+----
+
+
+<1> La route contient une partie *variable*, placé entre accolades `{  }` (ici _id_ est le nom du paramètre). Exemples d'arguments : `/question/edit/42` ou `/question/edit/352`.
+
+<2> Reprise de la partie variable de l'url comme *paramètre typé* de la méthode (attention, la correspondance
+se base sur les *noms* inscrits entre { } dans la route)
+
+Il est dans ce cas très facile de récupérer les valeurs en question, car elles sont passées automatiquement
+en tant qu'argument de la méthode !
+
+
+
+== Travaux Pratiques - Le contrôleur et la vue (initiation)
+
+WARNING: Attention à bien respecter les conventions de nommage https://kotlinlang.org/docs/coding-conventions.html
+
+
+====
+[start=1]
+. Ajouter un nouveau controller nommé _SioController_ disposant d'une méthode contrôleur _index_.
+Faire en sorte que l'index présente le message « *Hello world !* » à l'utilisateur
+(vue thymeleaf), suivi de la *langue préférée* du client (donnée implicite) ainsi que *son adresse IP* (idem).
+====
+
+====
+[start=2]
+. Ajouter la méthode _hello_ ci-dessous, qui reçoit en paramètre
+un nom, et retourne le message « Hello <nom> ! (<n> caractères) » (où <nom> est remplacé par l'argument reçu, et <n> le nombre de caractères du nom)
+====
+
+====
+[start=3]
+. Faire en sorte que le nom soit présenté à l'utilisateur soit *capitalisé*.
++
+Comme c'est un travail de présentation, il est logique de dédier cette tâche
+à la logique de présentation. Vous chercherez comment le faire en `tyhymleaf`.
++
+En cas d'absence de données d'entrée, si aucun nom n'est passé à hello, le
+message 'Hello Inconnu !' (sans le nombre de caractères) est présenté.
+====
+
+====
+[start=4]
+. Modifier la méthode d'action _hello_ afin que, si le nom transmis est de
+la forme _prenom*nom_ (avec une étoile entre le prénom et le nom), le message soit présenté  selon l'exemple ci-dessous : http://localhost:8000/hello/django*reinhardt
+
+image::hello-django.png[hello-django, caption="http://localhost:8000/hello/django*reinhardt"]
+
+WARNING: si aucune _étoile_ n'est présente dans l'argument de l'url,
+le fonctionnement de `hello` devra rester conforme à l'attendu de la question précédente (soit "Hello Django (6 caractères)" si, par exemple, seule la valeur "Django" est transmise)
+
+=> à vous de déterminer le travail qui devra être réalisé côté contrôleur et côté logique de présentaiton (thymeleaf)
+====
+
+====
+[start=5]
+. (plus difficile) Ajouter un *_flash message_* (message qui s'affiche qu'une seule fois), qui retourne  à l'utilisateur un *message de bienvenue avec son IP* lors d'une *première connection* à la route `/hello` (et donc à sa méthode d'action liée),
+pour une même instance de navigateur. Conseil : Afficher dans un premier temps le message, puis mettre sous condition la création du message en gérant une donnée de session utilisateur.
+
+
+TIP:  l'objet Session peut être retrouvé via un objet `HttpServletRequest`. Vous trouverez un exemple ici : https://github.com/ldv-melun/sbfirst)
+
+====
+
+
+== Challenge
+
+Concevoir une application web répondant aux spécifications suivantes :
+
+* L'utilisateur cherche à trouver un nombre retenu par l'application de façon « aléatoire », sur une plage d'amplitude allant de zéro à XXX (à definir).
+
+* Chaque nombre sera représenté par une cellule td d'un tableau html.
+
+* Lorsque l'utilisateur soumet une proposition (clique sur une cellule/nombre),
+l'application répond « valeur trop petite », « valeur trop grande » ou « Trouvé ! ».
+
+Durant les tentatives, l'application montre les cellules déjà sélectionnées par l'utilisateur (prévoir une classe CSS dédiée). La partie s'arrête lorsque l'utilisateur a trouvé le bon nombre.
+
+* Lorsque que le nombre est trouvé, l'application affiche un des messages suivants :
+** « Vous avez de la chance !» si le nombre d’essais du joueur est inférieur au nombre optimal (à déterminer après avoir étudié le principe de la recherche dichotomique - lien wikipédia ci-dessous).
+** « Votre stratégie a été la bonne » si le nombre d’essai du joueur est égale au nombre optimal.
+** « Vous avez débordé de n tentatives » où n est le nombre de tentatives au-delà du
+nombre optimal.
+
+* L'utilisateur pourra relancer autant de parties qu'il le souhaite.
+
+* Comme il se doit, l'application sera capable de gérer plusieurs utilisateurs/parties en même temps.
+
+TIP: Il est possible de réaliser un suivi de session sans rien sauvegarder sur le serveur (les « données de sessions » sont alors transmises au client – et donc portées uniquement par celui-ci).
+
+Optionnel, pour les plus avancés :
+
+* L'utilisateur peut étendre l'amplitude de la matrice (dimension du tableau)
+
+=== Ressources à prendre en compte
+
+• Recherche dichotomique : https://fr.wikipedia.org/wiki/Dichotomie
+
+
+

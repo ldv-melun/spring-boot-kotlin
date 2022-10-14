@@ -1,0 +1,95 @@
+= Introduction
+ifndef::backend-pdf[]
+:imagesdir: images
+endif::[]
+
+== Introduction
+
+Le modèle traditionnel d'architecture des applications web est de type 3 tiers (clients, serveur(s), SBBD(s))
+
+.Interaction type entre tiers d'une application web
+[plantuml]
+----
+skinparam {
+shadowing false
+monochrome false
+}
+hide footbox
+title (architecture 3 tiers web)
+
+client --> serveur_http : requête HTTP
+box
+	participant serveur_http
+	participant application
+end box
+
+serveur_http  --> application
+activate application
+application->application
+application --> sgbd : requêtes (x)ql
+application <-- sgbd
+application --> application
+application --> serveur_http
+deactivate application
+serveur_http  --> client : réponse HTTP
+
+----
+
+Les applications se situent sur le tiers du milieu "server et applications" (derrière un serveur HTTP).
+
+En environnement de développement, les développeurs disposent d'un `internal web server`, un serveur http intégré à leur IDE, https://tomcat.apache.org/[Apache Tomcat], utilisé pour les tests en phase de développement.
+
+En environnement de production, l'application pourra être déployée avec un serveur web intégré (tomcat) ou derrière un server d'application existant.
+
+== Spring
+
+Spring, un framework java pour les applications connectées, rend la programmation Kotlin/Java plus rapide, plus facile et plus sûre pour tout le monde. L'orientation de Spring sur la vitesse, la simplicité et la productivité en a fait l'un des plus populaires framework Java.
+
+On retrouve Spring dans tous les contextes : depuis les sites de commerce en ligne jusqu'aux voitures connectées, en passant par les applications de streaming TV et bien d'autres applications.
+
+Spring est un ensemble d'extensions et de bibliothèques tierces intégrées qui permet de bâtir à peu près n'importe quel type d'applicaton. Au coeur de Spring on retrouve l'Inversion de Contôle (Inversion of Control, _IoC_) et l'Injection de dépendances (Dependency Injection, _DI_), ces deux caractéristiques sont à la base d'un grand nombre d'autres caractéristiques et fonctionnalités.
+
+Une application Spring _classique_ est relativement difficile à mettre en oeuvre et demande une expertise certaine pour définir l'ossature et les fichiers de configuration.
+
+Spring Boot est une version de Spring basé sur le principe d'*auto-configuration*, plus facile à mettre en oeuvre tout en offrant les mêmes avantages que Spring. Spring Boot évite notamment les fichiers de configuration XML complexes. Par ailleurs, Kotlin simplifie la syntaxe et renforce la cohérence et sureté du code.
+
+== Spring Boot
+
+Spring Boot est une version de Spring qui *privilégie les conventions* plutôt que les configurations (_convention over configuration_), à savoir que si le développeur respecte un certain nombre de normes comme le nommage, le placement des fichiers de code, les annotations, ... il peut s'affranchir d'un grand nombre de fichiers de configuration. Spring fournit même un site dédié qui permet de générer un squelette d'application, https://start.spring.io, connu également sous le nom de https://start.spring.io[Spring Initializr].
+
+
+=== Spring Boot c'est :
+* Un outil de construction rapide de projets Spring
+** L’intégration des nombreux sous-projets Spring
+** La possibilité de choisir entre plusieurs technologies pour la persistance, la logique applicative ou la gestion des vues. Plusieurs technologies peuvent cohabiter
+** L’assurance de toujours avoir les bonnes dépendances
+** Etre prêt à commencer à programmer en quelques minutes
+* Une vision convention plutôt que configuration
+** L’application est prévue pour fonctionner avec un ensemble cohérents de paramètres par défaut
+** La configuration et la dépendance entre beans se fait principalement par annotations
+** Utilisation de fichiers properties simples pour surcharger les paramètres par défaut
+** On peut quand même utiliser des fichiers de configuration XML en faisant un effort
+
+=== Spring Boot n'est pas :
+
+* Une baguette magique
+* Un outil de scaffolding
+* La solution pour ne pas apprendre les mécanismes internes de Spring
+* Un outil pour les allergiques à _Maven_ et autre _Gradle_
+
+== Les dépendances d'une application Spring Boot
+
+_Spring Initializr_ permet de choisir les dépendances/frameworks à utiliser pour la conception d'une application certaines dépendances sont presque indispensables à la création d'une application Web, d'autres sont optionnelles et peuvent être choisies plus tard.
+
+* Les dépendances indispensables :
+** `Spring Boot DevTools` : permet des redémarrages rapides des applications, le rechargement temps réel des configurations pour une expérience de programmation plus fluide. Mais consomme un peu plus de ressources.
+** `Spring Web` : pour construire des applications Web MVC, y compris RESTFUL. Utilise Apache Tomcat comme conteneur de servlets par défaut.
+** `Thymeleaf` ou `Apache Freemarker` : exemples de moteurs de templates pour gérer les pages HTML, ne pas en choisir plus d'un dans un projet, autant que possible.
+* Les dépendances optionnelles :
+** `Spring Data JPA` : pour gérer la persistance des données dans une base SQL
+** `Apache Derby Database` ou `H2 Database` ou `PostgreSQL Driver` ou `MySQL Driver` : pour gérer les accès à une base de données SQL. Nécessaire pour `Spring Data JPA`.
+** `Spring Security` : framework d'authentification et d'autorisation pour créer des applications sécurisées. Attention dès que ce composant est installé l'application demande une authentification.
+
+== Générer une application Spring Boot
+
+Le moyen le plus simple pour générer une application Spring Boot est de passer par le site https://start.spring.io qui permet positionner un certain nombre de paramètres et de choisir les dépendances à utiliser (présenté dans prochainement)
