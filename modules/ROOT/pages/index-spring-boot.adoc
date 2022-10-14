@@ -22,6 +22,7 @@
 
 :source-highlighter: coderay
 
-include::_ch00_intro.adoc[leveloffset=+1]
-include::_ch01-http-protocol.adoc[leveloffset=+1]
 
+include::_ch00-http-protocol.adoc[leveloffset=+1]
+include::_ch01_intro_spring.adoc[leveloffset=+1]
+include::_ch02_first_app.adoc[leveloffset=+1]

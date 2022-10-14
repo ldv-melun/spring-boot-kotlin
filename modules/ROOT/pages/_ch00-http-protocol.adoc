@@ -1,17 +1,48 @@
 = Le protocole HTTP
-Olivier Capuozzo; Frédéric Varni
-v1.3, 2021-01-12: Version asciidoc
-:description: Cours et TP autour de Spring Boot
-:icons: font
-:listing-caption: Listing
-:toc-title: Table des matières
-:toc:
-:toclevels: 2
-:source-highlighter: coderay
 
-== Présentation
 
-Conformément au modèle d'architecture 3 tiers web, le client utilise le protocle HTTPfootnote:disclaimer[D'autres protocoles sont disponibles, comme WebDAV, WebSockets...] pour interagir avec l'application web.
+== Modèle d'architecture
+
+Le modèle traditionnel d'architecture des applications web est de type 3 tiers (clients, serveur(s), SBBD(s)), chaque tiers étant, par définition, positionné sur des matériels différents, éloigné.
+
+.Interaction type entre tiers d'une application web
+[plantuml]
+----
+skinparam {
+shadowing false
+monochrome false
+}
+hide footbox
+title (architecture 3 tiers web)
+
+client --> serveur_http : requête HTTP
+box
+	participant serveur_http
+	participant application
+end box
+
+serveur_http  --> application
+activate application
+application->application
+application --> sgbd : requêtes (x)ql
+application <-- sgbd
+application --> application
+application --> serveur_http
+deactivate application
+serveur_http  --> client : réponse HTTP
+
+----
+
+Les applications se situent sur le tiers du milieu "server et applications" (derrière un serveur HTTP).
+
+En environnement de développement, les développeurs disposent d'un `internal web server`, un serveur http intégré à leur IDE. Dans le cadre d'application écrite en Java, c'est le serveur d'application https://tomcat.apache.org/[Apache Tomcat], qui est souvent utilisé pour les tests (en phase de développement).
+
+En environnement de production, l'application pourra être déployée avec un serveur web intégré (tomcat) ou derrière un server d'application existant.
+
+
+== Interaction Client <-> Application
+
+Conformément au modèle d'architecture 3 tiers web, le client utilise le protocole HTTPfootnote:disclaimer[D'autres protocoles sont disponibles, comme WebDAV, WebSockets...] pour interagir avec l'application web. Le client web le plus populaire est le navigateur Web.
 
 HTTP (_Hyper Text Transfert Protocol_) a été inventé par Tim Berners-Lee, il définit
 la façon dont un serveur et un client web échangent des informations. HTTP ne
@@ -25,10 +56,10 @@ sans état ce qui signifie qu'il n'assure pas le suivi d'un dialogue entre le
 client et le serveur. HTTP est définit au-dessus de TCP qui est un protocole
 connecté et utilise le port TCP 80.
 
-Avec HTTP le client initie le dialogue en envoyant une requête au serveur, le
-serveut répond au client et coupe la communication (HTTP/1.0).
+Avec HTTP le client initie le dialogue en envoyant une requête à l'application, le
+serveur répond au client et coupe la communication (HTTP/1.0).
 
-.Echange client/serveur HTTP
+.Echange client <-> application HTTP
 [plantuml]
 ----
 skinparam {
@@ -36,8 +67,8 @@ shadowing false
 monochrome false
 }
 == Ouverture de la connexion TCP ==
-client --> serveur : requête HTTP
-serveur --> client : réponse HTTP
+client --> serveur_application : requête HTTP
+serveur_application --> client : réponse HTTP
 == fermeture de la connexion TCP ==
 ----
 
@@ -227,9 +258,9 @@ Rappel : HTTP est un protocole sans état
 
 Conséquence : un serveur HTTP n'a pas les moyens (via le protocole HTTP) de reconnaître une séquence de requêtes provenant d'un même client. L'adresse IP n'est pas suffisante pour identifier un client parce qu'elle peut faire référence à un serveur proxy sortant par exemple.
 
-Problème : Beaucoup d'applications web doivent gérées des états. Exemple : formulaire multi-pages, gestion d'un caddie, d’une session utilisateur.
+Problème : Beaucoup d'applications web doivent gérer des états. Exemple : formulaire multi-pages, gestion d'un caddie, d’une session utilisateur.
 
-Pour contourner ce problème, des données d’état doivent transiter entre les clients et le serveur et être sauvegardées sur un des ces deux tiers. C'est un des aspect très sensible, en terme de cybersécurité,  du protocole HTTP.
+Pour contourner ce problème, des données d’état doivent transiter entre les clients et le serveur et être sauvegardées sur un de ces deux tiers. C'est un des aspects très sensible, en terme de cybersécurité,  du protocole HTTP.
 
 Voici les solutions les plus courantes pour réaliser un suivi de sessions utilisateur.
 

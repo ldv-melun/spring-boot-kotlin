@@ -1,45 +1,4 @@
 = Introduction
-ifndef::backend-pdf[]
-:imagesdir: images
-endif::[]
-
-== Introduction
-
-Le modèle traditionnel d'architecture des applications web est de type 3 tiers (clients, serveur(s), SBBD(s))
-
-.Interaction type entre tiers d'une application web
-[plantuml]
-----
-skinparam {
-shadowing false
-monochrome false
-}
-hide footbox
-title (architecture 3 tiers web)
-
-client --> serveur_http : requête HTTP
-box
-	participant serveur_http
-	participant application
-end box
-
-serveur_http  --> application
-activate application
-application->application
-application --> sgbd : requêtes (x)ql
-application <-- sgbd
-application --> application
-application --> serveur_http
-deactivate application
-serveur_http  --> client : réponse HTTP
-
-----
-
-Les applications se situent sur le tiers du milieu "server et applications" (derrière un serveur HTTP).
-
-En environnement de développement, les développeurs disposent d'un `internal web server`, un serveur http intégré à leur IDE, https://tomcat.apache.org/[Apache Tomcat], utilisé pour les tests en phase de développement.
-
-En environnement de production, l'application pourra être déployée avec un serveur web intégré (tomcat) ou derrière un server d'application existant.
 
 == Spring
 
@@ -92,4 +51,4 @@ _Spring Initializr_ permet de choisir les dépendances/frameworks à utiliser po
 
 == Générer une application Spring Boot
 
-Le moyen le plus simple pour générer une application Spring Boot est de passer par le site https://start.spring.io qui permet positionner un certain nombre de paramètres et de choisir les dépendances à utiliser (présenté dans prochainement)
+Le moyen le plus simple pour générer une application Spring Boot est de passer par le site https://start.spring.io qui permet positionner un certain nombre de paramètres et de choisir les dépendances à utiliser.

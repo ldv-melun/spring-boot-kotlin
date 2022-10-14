@@ -1,13 +1,4 @@
 = Première application
-Olivier Capuozzo; Frédéric Varni
-v1.3, 2021-10-15: Version asciidoc
-:description: Cours et TP autour de Spring Boot
-:icons: font
-:listing-caption: Listing
-:toc-title: Table des matières
-:toc:
-:toclevels: 2
-:source-highlighter: coderay
 
 == Une première application Spring Boot
 
@@ -99,6 +90,48 @@ Le fichier `application.properties` est vide, il ne contiendra que les élément
 ----
 # vide
 ----
+
+
+## En cas de problème
+
+L'application utilise [Apache Maven](https://maven.apache.org/) pour la gestion de ses dépendances.
+
+Si vous utilisez des postes informatiques d'une organisation dont les connexions réseaux sont filtrées par un **proxy**, il vous faudra renseigner les données du proxy auprès de Maven.
+
+Pour cela vous devez comprendre comment fonctionne Maven : Par défaut, les librairies dont dépend une application sont stockées dans un dossier nommé `.m2`, à la racine du compte utilisateur (le `home directory`).
+
+La solution consiste alors à créer un fichier nommé `settings.xml` à la racine de `.m2`, dont le contenu est basé sur ce schéma
+
+`~/.m2/settings.xml` (source : https://maven.apache.org/guides/mini/guide-proxies.html)
+```
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <proxies>
+    <proxy>
+      <id>myproxy</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>proxy.somewhere.com</host>
+      <port>8080</port>
+    </proxy>
+  </proxies>
+
+</settings>
+```
+
+Remarque : le protocole `http` est celui utilisé pour atteindre le proxy. À modifier le cas échéant.
+
+
+=== Construire et lancer l'application
+
+Build
+
+Run
+
+Stop ou Re-Run
+
+
 
 === Un premier contrôleur
 
