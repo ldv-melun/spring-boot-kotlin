@@ -60,4 +60,4 @@ Votre machine est maintenant opérationnelle. Vous pouvez vous engagez dans le d
 
 Le moyen le plus simple pour générer une application Spring Boot est de passer par le site https://start.spring.io qui permet positionner un certain nombre de paramètres et de choisir les dépendances à utiliser.
 
-La suite > xref:ROOT:_ch02_first_app.adoc[première application Spring Boot avec exercices d'apllication]
+La suite > xref:sio-component:ROOT:_ch02_first_app.adoc[première application Spring Boot avec exercices d'apllication]
