@@ -101,7 +101,7 @@ Le fichier `application.properties` est vide, il ne contiendra que les élément
 
 ## En cas de problème
 
-L'application utilise [Apache Maven](https://maven.apache.org/) pour la gestion de ses dépendances.
+L'application utilise https://maven.apache.org/[Apache Maven] pour la gestion de ses dépendances.
 
 Si vous utilisez des postes informatiques d'une organisation dont les connexions réseaux sont filtrées par un **proxy**, il vous faudra renseigner les données du proxy auprès de Maven.
 
