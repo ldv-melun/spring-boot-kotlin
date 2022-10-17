@@ -58,7 +58,9 @@ Rendez-vous https://github.com/ldv-melun/sbfirst[Starter app Spring Boot Kotlin]
 
 Votre machine est maintenant opérationnelle. Vous pouvez vous engagez dans le développement web avec Spring Boot.
 
-Le moyen le plus simple pour générer une application Spring Boot est de passer par le site https://start.spring.io qui permet positionner un certain nombre de paramètres et de choisir les dépendances à utiliser.
+Le moyen le plus simple pour générer une application Spring Boot est de passer par le site https://start.spring.io qui permet de positionner un certain nombre de paramètres et de choisir les dépendances à utiliser.
+
+C'est ce que nous allons voir maintenant.
 
 //
 //La suite > xref:sio-component:ROOT:_ch02_first_app.adoc[première application Spring Boot avec exercices d'apllication]

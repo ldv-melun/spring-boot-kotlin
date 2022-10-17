@@ -2,7 +2,12 @@
 
 == Une première application Spring Boot
 
-=== Créer le projet
+Nous allons créer une application Spring Boot _from scratch_ (à partir de zéro)
+
+
+Allez sur : https://start.spring.io
+
+=== Création du projet
 
 Dans Spring Initializr effectuez les choix suivants :
 
@@ -26,6 +31,8 @@ image::sb-first-kotlin-initalizr.png[sbfirst.spring.initialzr]
 ** Thymeleaf
 
 Spring Initilizr génére un fichier `.zip`, `sbfirst.zip`, qui contient le projet prêt à l'emploi.
+
+Une fois téléchargé, décompressez-le dans un dossier `projets`, puis ouvrir le dossier du projet (et non son dossier parent) avec votre IDE.
 
 .Arborescence du projet `sbfirst`
 [literal%nowrap]
@@ -123,16 +130,6 @@ La solution consiste alors à créer un fichier nommé `settings.xml` à la raci
 Remarque : le protocole `http` est celui utilisé pour atteindre le proxy. À modifier le cas échéant.
 
 
-=== Construire et lancer l'application
-
-Build
-
-Run
-
-Stop ou Re-Run
-
-
-
 === Un premier contrôleur
 
 Un contrôleur est une classe qui est annotée avec `@Controller` et qui contient des méthodes associées à des URI, ces methodes peuvent être associée à des annotations comme `@GetMapping`, `@PostMapping`, ... ou `@RequestMapping` plus générique. Les paramètres passés à ces méthodes sont variables et interprêtés par le moteur de Spring MVC.
@@ -198,7 +195,7 @@ Conformément à l'architecture applicative 3 tiers web, c'est une méthode dite
 
 TIP: Terminologie : les méthodes associées à des _Routes_ dans une classe _Controller_ sont appelées *_méthodes d'action_* ou *méthodes contrôleur*. Par extension, on nomme parfois de telles méthodes des *_contrôleurs_*, et leur classe des "classes contrôleur".
 
-== Auto-injection de l'objet HttpServletRequest
+=== Auto-injection de l'objet HttpServletRequest
 
 Pour accéder aux données transmises avec la requête HTTP, le contrôleur principal qui appelle les (méthodes) contrôleurs, a la possibilité de passer en argument un objet de type _javax.servlet.http.HttpServletRequest_ (entre autres)
 
@@ -224,7 +221,7 @@ C'est par l'intermédiaire de cet objet de type _HttpServletRequest_ que nous po
 <1> On remarquera, dans la signature de la méthode, la déclaration du paramètre permettant à Spring de réaliser l'injection.
 
 
-== Données d'entrée implicites
+=== Données d'entrée implicites
 
 Ce sont les données transmises par le client dans la partie entête HTTP. Ces données sont accessibles *via* l'objet `HttpServletRequest` qui dispose de méthodes bien pratiques pour interroger ces données.
 
@@ -248,11 +245,11 @@ Returns the Internet Protocol (IP) address of the client or last proxy that sent
 voir https://tomcat.apache.org/tomcat-7.0-doc/servletapi/javax/servlet/http/HttpServletRequest.html[API Request]
 
 
-== Données d'entrée explicites
+=== Données d'entrée explicites
 
 Typiquement ce sont celles en provenance d'une requête `HTTP`
 
-=== Données sous la forme de couples `clé=valeur`
+==== Données sous la forme de couples `clé=valeur`
 
 * de type `GET` comme composantes https://en.wikipedia.org/wiki/Query_string[QueryString] de l'*URL*
 * de type `POST` *formulaire HTML ou non*, passé dans le corps de la requête HTTP,
@@ -282,7 +279,7 @@ Cette façon de faire convient aussi bien aux données en provenance de la *quer
 
 IMPORTANT: La méthode `getParameter` ne doit être utilisée que si on est sûr d'obtenir, *au plus une seule valeur*. Dans le cas contraire nous utiliserons la méthode https://tomcat.apache.org/tomcat-7.0-doc/servletapi/javax/servlet/ServletRequest.html#getParameterValues(java.lang.String)[`getParameterValues`] qui retourne un tableau de String.
 
-=== Données intégrées à l'url
+==== Données intégrées à l'url
 
 Exemple d'appel. On souhaite modifier une donnée :
 
@@ -313,8 +310,6 @@ se base sur les *noms* inscrits entre { } dans la route)
 
 Il est dans ce cas très facile de récupérer les valeurs en question, car elles sont passées automatiquement
 en tant qu'argument de la méthode !
-
-
 
 == Travaux Pratiques - Le contrôleur et la vue (initiation)
 
