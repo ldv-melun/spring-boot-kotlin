@@ -1,8 +1,8 @@
-= Spring Boot
+= Spring Boot Starter
+
 :title: Spring Boot Starter
 :description: Cours et TP autour de Spring Boot
 :keywords: Spring Boot Kotlin langage programmation web
-
 :authors: Olivier Capuozzo; Frédéric Varni
 :email:
 //
@@ -17,11 +17,7 @@
 :toc: left
 :toclevels: 5
 :toc-title: Sommaire
-//
-// Information contenu :
-
 :source-highlighter: coderay
-
 
 include::_ch00-http-protocol.adoc[leveloffset=+1]
 include::_ch01_intro_spring.adoc[leveloffset=+1]
