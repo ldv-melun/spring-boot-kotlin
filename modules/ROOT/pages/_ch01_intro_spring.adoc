@@ -49,6 +49,15 @@ _Spring Initializr_ permet de choisir les dépendances/frameworks à utiliser po
 ** `Apache Derby Database` ou `H2 Database` ou `PostgreSQL Driver` ou `MySQL Driver` : pour gérer les accès à une base de données SQL. Nécessaire pour `Spring Data JPA`.
 ** `Spring Security` : framework d'authentification et d'autorisation pour créer des applications sécurisées. Attention dès que ce composant est installé l'application demande une authentification.
 
+
+== Préparation de votre machine de dev
+
+Rendez-vous https://github.com/ldv-melun/sbfirst[Starter app Spring Boot Kotlin] afin de valider vos prérequis machine pour le développement web. Consulter le README et suivre les étapes qui vont vous amener à télécharger le projet, l'ouvrir dans un IDE, le compiler et l'exécuter.
+
 == Générer une application Spring Boot
 
+Votre machine est maintenant opérationnelle. Vous pouvez vous engagez dans le développement web avec Spring Boot.
+
 Le moyen le plus simple pour générer une application Spring Boot est de passer par le site https://start.spring.io qui permet positionner un certain nombre de paramètres et de choisir les dépendances à utiliser.
+
+La suite > xref:_ch02_first_app.adoc[première application Spring Boot avec exercices d'apllication]

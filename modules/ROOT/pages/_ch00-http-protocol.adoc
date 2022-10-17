@@ -3,7 +3,7 @@
 
 == Modèle d'architecture
 
-Le modèle traditionnel d'architecture des applications web est de type 3 tiers (clients, serveur(s), SBBD(s)), chaque tiers étant, par définition, positionné sur des matériels différents, éloigné.
+Le modèle traditionnel d'architecture des applications web est de type 3 tiers (clients, serveur(s), SBBD(s)), chaque tiers étant, par définition, positionné sur des matériels différents, éloignés les uns des autres mais reliés par des connexions réseaux.
 
 .Interaction type entre tiers d'une application web
 [plantuml]
@@ -33,12 +33,11 @@ serveur_http  --> client : réponse HTTP
 
 ----
 
-Les applications se situent sur le tiers du milieu "server et applications" (derrière un serveur HTTP).
+Les applications se situent sur le tiers du milieu, sur le "server d'applications" (derrière un serveur HTTP le plus souvent).
 
 En environnement de développement, les développeurs disposent d'un `internal web server`, un serveur http intégré à leur IDE. Dans le cadre d'application écrite en Java, c'est le serveur d'application https://tomcat.apache.org/[Apache Tomcat], qui est souvent utilisé pour les tests (en phase de développement).
 
-En environnement de production, l'application pourra être déployée avec un serveur web intégré (tomcat) ou derrière un server d'application existant.
-
+En environnement de production, l'application pourra être déployée avec un serveur web intégré (tomcat) ou derrière un server d'applications existant.
 
 == Interaction Client <-> Application
 
@@ -189,7 +188,7 @@ de fois où elle est envoyée, elle ne modifie l'état du server qu'une seule fo
 
 * https://curl.se/download.html[curl] opérationnel sur votre système
 
-* une petite application web opérationnelle : http://51.68.231.195:8080/hello
+* une petite application web opérationnelle : http://51.68.231.195:8080/hello (dont on peut obtenir le code https://github.com/ldv-melun/sbfirst[ici])
 
 NOTE: *cURL* (abréviation de _client URL request library_ : « bibliothèque de requêtes aux URL pour les clients » ou see URL : « voir URL ») est une interface en ligne de commande, écrite en C, destinée à récupérer le contenu d'une ressource accessible par un réseau informatique. https://fr.wikipedia.org/wiki/CURL
 

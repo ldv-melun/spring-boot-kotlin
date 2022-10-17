@@ -1,6 +1,8 @@
 = Spring Boot
-//
-// Identification auteur :
+:title: Spring Boot Starter
+:description: Cours et TP autour de Spring Boot
+:keywords: Spring Boot Kotlin langage programmation web
+
 :authors: Olivier Capuozzo; Frédéric Varni
 :email:
 //
@@ -17,8 +19,6 @@
 :toc-title: Sommaire
 //
 // Information contenu :
-:description: Cours et TP autour de Spring Boot
-:keywords: Spring Boot Kotlin langage programmation web
 
 :source-highlighter: coderay
 
