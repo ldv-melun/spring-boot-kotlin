@@ -59,20 +59,23 @@ Pour connaître les instructions de dépendances de composants, aller ici : http
 @see https://www.webjars.org/documentation#springboot -->
  <dependency>
         <groupId>org.webjars</groupId>
-        <artifactId>webjars-locator-core</artifactId>
+        <artifactId>webjars-locator-core</artifactId> <1>
         <version>0.52</version>
  </dependency>
 
  <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
  <dependency>
     <groupId>org.webjars</groupId>
-    <artifactId>bootstrap</artifactId>
+    <artifactId>bootstrap</artifactId> <2>
     <version>5.2.2</version>
  </dependency>
 
 </dependencies>
 
 ----
+
+<1> Ce composant permet de ne pas renseigner la version des composants dans les instructions d'inclusion du template html. C'est ce document qui se charge de cela.
+<2> La dernière version du composant bootstrap (octobre 2022)
 
 Ces déclarations de dépendances, lorsqu'elle seront évaluées par _maven_, provoqueront le rapatriement, sur la machine hôte, des ressources inscrites dans le _webjars_.
 
@@ -174,7 +177,7 @@ Voyons maintenant des exemples de composants _fragment_
 
 <1> Un composant est en fait le body d'une page HTML particulière, comportant une déclaration de fragment.
 <2> Ceci est un exemple (la doc thymleaf parle de _prototype_). Sous IntelliJ, pensez à utiliser la complétion automatique (ctrl+ esp) pour l'expression de chemin.
-<3> C'est la valeur _src_ qui sera appliquée. Les expressions thymleaf de chemin ou de lien sont encadrées  par `@{ ... }`.
+<3> C'est la valeur _src_ qui sera appliquée. Les expressions thymleaf de chemin ou de lien sont encadrées  par `@{ ... }`. On notera que nous ne faisons pas appel à une version particulière du composant car c'est `webjars-locator-core` qui s'en charge.
 
 .header.html
 [source, html]
@@ -215,7 +218,7 @@ Voyons maintenant des exemples de composants _fragment_
 
 <1> déclaration d'un fragment nommé _header-css_
 <2> prototype de lien bootstrap
-<3> expression du lien th:href
+<3> expression du lien th:href pour déclaration de l'inclusion
 <4> le fichier CSS pour les redéfinitions propres à l'application (ne pas faire référence au dossier `static`)
 <5> définition de la valeur de `<title>` avec valeur par défaut (opérateur elvis)
 <6> déclaration d'un autre fragment dans le même fichier
