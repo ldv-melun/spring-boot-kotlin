@@ -1,0 +1,259 @@
+= Introduction (layout avec thymleaf)
+
+== Présentation
+Lorsqu'une application web est constituée de plusieurs _pages_,  il est alors
+de bon usage de conserver une unité de représentation.
+
+Techniquement, cette unité de représentation se base sur :
+
+*  un *modèle*, connu sous le nom de _template_ ou _layout_ (structuration HTML).
+*  un ensemble de règles CSS partagées par l'ensemble des pages
+*  [des dépendances de bibliothèques js]
+
+En phase de prototypage, il est fréquent de s'appuyer sur des frameworks CSS (par exemples https://getbootstrap.com/[Bootstrap], https://bulma.io/[bulma] )
+
+Ces solutions intègrent de nombreux composants CSS et JS. Ces composants sont destinés au tiers client (navigateur, smartphone...).
+
+Il existe 2 solutions pour distribuer ces composants aux clients tiers :
+
+* donner aux clients un lien sur le réseau de contenu (_CDN content delivery network_), pour téléchargement, par exemple http://code.jquery.com/jquery-3.3.1.js
+* servir ces composants à partir du serveur web de l'application (communication HTTP entre le serveur HTTP de l'application et les clients), par exemple http://monapplication.com/js/jquery-3.3.1.js
+
+Dans le cadre d'une application à faible diffusion, la deuxième solution peut être envisagée, de plus elle a le mérite d'assurer la disponibilité des composants (si l'application est disponible, alors ses composants le sont aussi), et, accessoirement, permet au développeur de travailler hors ligne.
+
+== webjars - une solution java
+
+Nous nous placons dans le cas où c'est l'application qui héberge les composants dont auront besoin ses tiers clients.
+
+Initialement, l'application devra donc les obtenir (elle utilisera CDN pour l'occasion). Elle pourrait pour cela utiliser des gestionnaires de version spécilisés comme _npm_, _yarn_, _bower_...),
+mais il serait dommage de ne pas profiter du gestionnaire de version _maven_ ! C'est ce que permet la solution http://www.webjars.org/[webjars], qui encapsule les composants client dans un jar. Tout cela se passe côté serveur bien entendu.
+
+Les WebJars sont des librairies à destination des clients-web (par exemple jQuery & Bootstrap), packagées dans un fichier JAR (Java Archive), et disponible via divers gestionnaires d'automatisation de taches, comme _maven_ par exemple.
+
+https://www.webjars.org/documentation#springboot
+
+
+ifdef::backend-pdf[]
+image::webjars-bt.png[webjars-bt, 600]
+endif::[]
+
+ifndef::backend-pdf[]
+image::webjars-bt.png[webjars-bt]
+endif::[]
+
+
+La définition de la dépendance devra être copiée dans le fichier *pom.xml* du projet. C'est à partir de cette référence que *maven* téléchargera dans son dépot local les fichiers en question, et rendra accessibles ces fichiers en les plaçant dans le _CLASSPATH_ du projet (ce qui les rendra accessible à l'IDE).
+
+Pour connaître les instructions de dépendances de composants, aller ici : https://mvnrepository.com/artifact/org.webjars
+
+
+== webjars - cas bootstrap
+
+.Exemple pom.xml
+[source, xml]
+----
+  [...]
+
+<dependencies>
+<!--making dependencies version agnostic
+@see https://www.webjars.org/documentation#springboot -->
+ <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>webjars-locator-core</artifactId>
+        <version>0.52</version>
+ </dependency>
+
+ <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
+ <dependency>
+    <groupId>org.webjars</groupId>
+    <artifactId>bootstrap</artifactId>
+    <version>5.2.2</version>
+ </dependency>
+
+</dependencies>
+
+----
+
+Ces déclarations de dépendances, lorsqu'elle seront évaluées par _maven_, provoqueront le rapatriement, sur la machine hôte, des ressources inscrites dans le _webjars_.
+
+Ces ressources seront alors accessibles au projet, via l'IDE, au même titre que des librairies java.
+
+Le développeur pourra donc y faire références à la conception des vues.
+
+== layout - cas thymeleaf
+
+Avec _thymeleaf_, la conception d'un modèle de présentation (*layout* ou *template*)
+est basée sur la décomposition du modèle en *fragments*.
+
+Voici une organisation typique de ressources liées à la logique de présentation:
+
+....
+
+├── application.properties
+├── static
+│   └── css
+│       └── main.css <1>
+└── templates
+    ├── admin <2>
+    │   └── index.html <3>
+    ├── error
+    │   └── 403.html
+    ...
+    ├── fragments
+    │   ├── footer.html <4>
+    │   └── header.html
+    └─ index.html
+....
+
+<1> pour la redéfinition de règles héritées, propre à l'application
+<2> en référence au rôle utilisateur prioritairement concerné (ici un `admin`)
+<3> les vues des controleurs sont placées dans un dossier portant le nom racine d'un contrôleur (AdminController)
+<4> les fichiers déclarant des *fragments* (parties réutilisées par les vues) sont logés dans le dossier _fragments_
+
+Les différentes pages partagent toutes les mêmes parties `header` (parties <head> et menu) et `footer`.
+
+Voici un exemple d'utilisation :
+
+.admin/index.html
+[source, html]
+----
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Page Admin</title>
+    <div th:replace="fragments/header :: header-css (title='Admin')"/> <1>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"/> <2>
+
+<div class="container">
+
+     <h1>Admin index</h1>
+
+</div>
+<!-- /.container -->
+
+<div th:replace="fragments/footer:: footer"/> <3>
+
+</body>
+</html>
+----
+
+<1> insertion du fragment _header-css_ (définit dans le fichier _header.html_)
+<2> insertion du fragment _header_ (définit dans le fichier _header.html_)
+<3> insertion du fragment _footer_ (définit dans le fichier _footer.html_)
+
+Voyons maintenant des exemples de composants _fragment_
+
+.footer.html
+[source, html]
+----
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+</head>
+<body>
+<div th:fragment="footer"> <1>
+  <div class="container">
+    <footer>
+        &copy; 2022 myapplication.com
+    </footer>
+
+    <script type="text/javascript"
+            src="/webjars/bootstrap/5.2.2/js/bootstrap.min.js" <2>
+            th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"> <3>
+    </script>
+
+  </div>
+</div>
+</body>
+</html>
+----
+
+<1> Un composant est en fait le body d'une page HTML particulière, comportant une déclaration de fragment.
+<2> Ceci est un exemple (la doc thymleaf parle de _prototype_). Sous IntelliJ, pensez à utiliser la complétion automatique (ctrl+ esp) pour l'expression de chemin.
+<3> C'est la valeur _src_ qui sera appliquée. Les expressions thymleaf de chemin ou de lien sont encadrées  par `@{ ... }`.
+
+.header.html
+[source, html]
+----
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+   <th:block th:fragment="header-css"> <1>
+      <link rel="stylesheet" type="text/css"
+        href="/webjars/bootstrap/5.2.2/css/bootstrap.min.css" <2>
+        th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" /> <3>
+
+      <link rel="stylesheet" th:href="@{/css/main.css}" <4>
+        href="../static/css/main.css" />
+
+      <title th:text="${title ?: 'Default title'}"></title> <5>
+
+   </th:block>
+</head>
+<body>
+<div th:fragment="header"> <6>
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" th:href="@{/}">Spring Boot</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a th:href="@{/}">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>
+----
+
+<1> déclaration d'un fragment nommé _header-css_
+<2> prototype de lien bootstrap
+<3> expression du lien th:href
+<4> le fichier CSS pour les redéfinitions propres à l'application (ne pas faire référence au dossier `static`)
+<5> définition de la valeur de `<title>` avec valeur par défaut (opérateur elvis)
+<6> déclaration d'un autre fragment dans le même fichier
+
+== Controleur
+
+Voici un exemple de mise en oeuvre, à minima :
+
+[source, java]
+----
+ // AdminController
+
+  @GetMapping("/admin")
+  public String admin() {
+     return "/admin/index";
+  }
+----
+
+Nous avons ici rangé les vues dans des dossiers
+portant le nom du rôle prioritairement concerné, un parti pris.
+
+== Documentation
+
+* Documentation générale :  https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html[thymeleaf documenataion]
+
+* Ne pas passer à côté des classes utilitaires : https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appendix-b-expression-utility-objects[classes utilitaires - avec exemples]
+
+* Différentes façons d'inclure un fragment : http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments[thymeleaf:insclusion de fragments]
+* Paramétrer un fragment : http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#parameterizable-fragment-signatures[fragment paramétré]
+
+
+== Travaux pratiques
+
+=== Exercice 1
+Intégrer bootstrap dans votre application existante, avec le modèle `navbar-static` disponible ici : https://getbootstrap.com/docs/5.2/examples/navbar-static/
+
+image:sbfirst-webjars-bootstrap-nav.png[sbfirst-webjars-bootstrap-nav.png]
+
+=== Exercice 2
+
+TODO

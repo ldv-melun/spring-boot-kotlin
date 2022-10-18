@@ -1,4 +1,5 @@
 = Première application
+:toc:
 
 == Une première application Spring Boot
 
@@ -68,6 +69,8 @@ sbfirst
 <5> Le dossier de stockage des templates Freemarker ou Thymeleaf
 
 La classe principale de l'application ressemble à celles qu'on peut écrire pour n'importe quelle application en mode ligne de commande : une fonction `main` statique qui permet d'instancier et de lancer l'application.
+
+<<<<
 
 .La classe principale de l'application
 [source,kotlin]
@@ -223,7 +226,7 @@ C'est par l'intermédiaire de cet objet de type _HttpServletRequest_ que nous po
 
 === Données d'entrée implicites
 
-Ce sont les données transmises par le client dans la partie entête HTTP. Ces données sont accessibles *via* l'objet `HttpServletRequest` qui dispose de méthodes bien pratiques pour interroger ces données.
+Ce sont les données transmises automatiquement par le tiers client, dans la partie entête HTTP. Ces données sont accessibles *via* l'objet `HttpServletRequest` qui dispose de méthodes bien pratiques pour les interroger.
 
 * `getMethod(): String`
 Returns the name of the HTTP method with which this request was made, for example, GET, POST, or PUT.
@@ -244,10 +247,10 @@ Returns the Internet Protocol (IP) address of the client or last proxy that sent
 
 voir https://tomcat.apache.org/tomcat-7.0-doc/servletapi/javax/servlet/http/HttpServletRequest.html[API Request]
 
-
+<<<<
 === Données d'entrée explicites
 
-Typiquement ce sont celles en provenance d'une requête `HTTP`
+Typiquement ce sont celles volontairement transmises par la requête `HTTP`
 
 ==== Données sous la forme de couples `clé=valeur`
 
@@ -284,10 +287,10 @@ IMPORTANT: La méthode `getParameter` ne doit être utilisée que si on est sûr
 Exemple d'appel. On souhaite modifier une donnée :
 
 ----
-http://quizbe.org/question/edit/42 <1>
+https://quizbe.org/question/edit/42 <1>
 ----
 
-<1> Attention, l'URL *n'est pas* `http://quizbe.org/question/edit?id=42`
+<1> Attention, l'URL *n'est pas* `https://quizbe.org/question/edit?id=42`
 
 Pour extraire de l'URL les parties variables, nous les encadrons d'accolades et utilisons l'annotation *`@PathVariable`*
 
@@ -295,21 +298,20 @@ Pour extraire de l'URL les parties variables, nous les encadrons d'accolades et 
 [source, kotlin]
 ----
   @GetMapping("/question/edit/{id}") <1>
-  fun showUpdateForm(@PathVariable("id") id: Long, model: Model, request: HttpServletRequest): String { <2>
+  fun showUpdateForm(@PathVariable("id") id: Long,  <2>
+         model: Model,
+         request: HttpServletRequest): String {
      val questionDto = questionService.findQuestionDtoById(id)
      model["questionDto"] = questionDto
      return "/question/add-update-question"
   }
 ----
 
-
 <1> La route contient une partie *variable*, placé entre accolades `{  }` (ici _id_ est le nom du paramètre). Exemples d'arguments : `/question/edit/42` ou `/question/edit/352`.
 
-<2> Reprise de la partie variable de l'url comme *paramètre typé* de la méthode (attention, la correspondance
-se base sur les *noms* inscrits entre { } dans la route)
+<2> Reprise de la partie variable de l'url comme *paramètre typé* de la méthode (attention, la correspondance se base sur le *nom* inscrit entre { } dans la route)
 
-Il est dans ce cas très facile de récupérer les valeurs en question, car elles sont passées automatiquement
-en tant qu'argument de la méthode !
+Il est dans ce cas très facile de récupérer les valeurs en question, car elles sont passées automatiquement en tant qu'argument de la méthode !
 
 == Travaux Pratiques - Le contrôleur et la vue (initiation)
 
