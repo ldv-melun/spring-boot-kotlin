@@ -90,23 +90,22 @@ est basée sur la décomposition du modèle en *fragments*.
 
 Voici une organisation typique de ressources liées à la logique de présentation:
 
-....
 
-├── application.properties
-├── static
-│   └── css
-│       └── main.css <1>
-└── templates
-    ├── admin <2>
-    │   └── index.html <3>
-    ├── error
-    │   └── 403.html
-    ...
-    ├── fragments
-    │   ├── footer.html <4>
-    │   └── header.html
-    └─ index.html
-....
+ ├── application.properties
+ ├── static
+ │   └── css
+ │       └── main.css <1>
+ └── templates
+     ├── admin <2>
+     │   └── index.html <3>
+     ├── error
+     │   └── 403.html
+     ...
+     ├── fragments
+     │   ├── footer.html <4>
+     │   └── header.html
+     └─ index.html
+
 
 <1> pour la redéfinition de règles héritées, propre à l'application
 <2> en référence au rôle utilisateur prioritairement concerné (ici un `admin`)
