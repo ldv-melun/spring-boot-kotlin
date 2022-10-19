@@ -36,7 +36,7 @@ Spring Initilizr génére un fichier `.zip`, `sbfirst.zip`, qui contient le proj
 Une fois téléchargé, décompressez-le dans un dossier `projets`, puis ouvrir le dossier du projet (et non son dossier parent) avec votre IDE.
 
 .Arborescence du projet `sbfirst`
-[literal%nowrap]
+[literal]
 ----
  sbfirst
  ├── .gitignore
