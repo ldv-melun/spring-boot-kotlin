@@ -102,7 +102,7 @@ Le fichier `application.properties` est vide, il ne contiendra que les élément
 ----
 
 
-## En cas de problème
+== En cas de problème
 
 L'application utilise https://maven.apache.org/[Apache Maven] pour la gestion de ses dépendances.
 
@@ -137,7 +137,7 @@ Voir aussi `File>Settings>Proxy`
 Voir aussi `File>Invalide Caches...` puis `restart`
 
 
-=== Un premier contrôleur
+== Un contrôleur et vue Thymeleaf+HTML
 
 Un contrôleur est une classe qui est annotée avec `@Controller` et qui contient des méthodes associées à des URI, ces methodes peuvent être associée à des annotations comme `@GetMapping`, `@PostMapping`, ... ou `@RequestMapping` plus générique. Les paramètres passés à ces méthodes sont variables et interprêtés par le moteur de Spring MVC.
 
@@ -195,6 +195,12 @@ L'expression `th:text` permet de définir un contenu textuel pour un élément H
 
 D'autres expressions `thymeleaf` seront présentées ultérieurement.
 ====
+
+Lancer l'application et tester : `localhost:8080/`
+
+image:sbfirst-localhost8080.png[localhost8080]
+
+Maintenant que nous avons vu comment concevoir un contrôleur et une vue associée, interessons-nous à la gestion des données transmises (initiation)
 
 == Gérer les données d'entrée
 
