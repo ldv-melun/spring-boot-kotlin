@@ -292,6 +292,26 @@ Cette façon de faire convient aussi bien aux données en provenance de la *quer
 
 IMPORTANT: La méthode `getParameter` ne doit être utilisée que si on est sûr d'obtenir, *au plus une seule valeur*. Dans le cas contraire nous utiliserons la méthode https://tomcat.apache.org/tomcat-7.0-doc/servletapi/javax/servlet/ServletRequest.html#getParameterValues(java.lang.String)[`getParameterValues`] qui retourne un tableau de String.
 
+[TIP]
+====
+Une autre façon d'opérer est de déclarer la valeur attendue en tant que paramètre *typé* du contrôleur. Pour cela nous devons faire usage de l'annotation `*@RequestParam*`
+
+Exemple
+
+[source, kotlin]
+----
+ @GetMapping("/hello")
+   fun index(@RequestParam(defaultValue = "") nom: String): String { <1>
+        // faire quelque chose avec nom
+    }
+----
+
+<1> Inutile dans ce cas de demander un objet `HttpServletRequest`
+
+TIP: Le fait de déclarer une valeur par défaut nous permet de typer la variable `nom` en `*String*`. Dans le cas contraire nous aurions du la typer par `*String?*`, car est la valeur par défaut de la valeur par défaut est `null` (vous avez suivi ? ;)
+
+====
+
 ==== Données intégrées à l'url
 
 Exemple d'appel. On souhaite modifier une donnée :
@@ -302,15 +322,14 @@ https://quizbe.org/question/edit/42 <1>
 
 <1> Attention, l'URL *n'est pas* `https://quizbe.org/question/edit?id=42`
 
-Pour extraire de l'URL les parties variables, nous les encadrons d'accolades et utilisons l'annotation *`@PathVariable`*
+Pour extraire les parties variables de l'URL, nous les encadrons d'accolades et utilisons l'annotation *`@PathVariable`*
 
 .Exemple d'exploitation de données d'URL
 [source, kotlin]
 ----
   @GetMapping("/question/edit/{id}") <1>
   fun showUpdateForm(@PathVariable("id") id: Long,  <2>
-         model: Model,
-         request: HttpServletRequest): String {
+         model: Model): String {
      val questionDto = questionService.findQuestionDtoById(id)
      model["questionDto"] = questionDto
      return "/question/add-update-question"
@@ -359,7 +378,7 @@ la forme _prenom*nom_ (avec une étoile entre le prénom et le nom), le message 
 
 image::hello-django.png[hello-django, caption="http://localhost:8000/hello/django*reinhardt"]
 
-WARNING: si aucune _étoile_ n'est présente dans l'argument de l'url,
+WARNING: s aucune _étoile_ n'est présente dans l'argument de l'url,
 le fonctionnement de `hello` devra rester conforme à l'attendu de la question précédente (soit "Hello Django (6 caractères)" si, par exemple, seule la valeur "Django" est transmise)
 
 => à vous de déterminer le travail qui devra être réalisé côté contrôleur et côté logique de présentaiton (thymeleaf)
