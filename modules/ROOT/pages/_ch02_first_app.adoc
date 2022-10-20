@@ -159,7 +159,7 @@ class MainController { <1>
     @GetMapping("/") <2>
     fun index(model: Model): String { <3>
         model["title"] = "Hello world !" <4>
-        return "main/hello" <5>
+        return "main/index" <5>
     }
 
 }
@@ -349,7 +349,7 @@ WARNING: Attention à bien respecter les conventions de nommage https://kotlinla
 
 ====
 [start=1]
-. Ajouter un nouveau controller nommé _SioController_ disposant d'une méthode contrôleur _index_.
+. Ajouter une nouvelle classe `controller` nommé _SioController_ disposant d'une méthode contrôleur _index_.
 Faire en sorte que l'index présente le message « *Hello world !* » à l'utilisateur
 (vue thymeleaf), suivi de la *langue préférée* du client (donnée implicite) ainsi que *son adresse IP* (idem).
 ====
