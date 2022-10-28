@@ -349,7 +349,7 @@ Il est dans ce cas très facile de récupérer les valeurs en question, car elle
 
 == Travaux Pratiques - Le contrôleur et la vue (initiation)
 
-WARNING: Attention à bien respecter les conventions de nommage https://kotlinlang.org/docs/coding-conventions.html
+WARNING: Attention à bien respecter les conventions de nommage usuelle https://kotlinlang.org/docs/coding-conventions.html
 
 ====
 [start=1]
@@ -378,9 +378,9 @@ message 'Hello Inconnu !' (sans le nombre de caractères) est présenté.
 ====
 [start=4]
 . Modifier la méthode d'action _hello_ afin que, si le nom transmis est de
-la forme _prenom*nom_ (avec une étoile entre le prénom et le nom), le message soit présenté  selon l'exemple ci-dessous : http://localhost:8000/hello/django*reinhardt
+la forme _prenom*nom_ (avec une étoile entre le prénom et le nom), le message soit présenté  selon l'exemple ci-dessous : http://localhost:8080/hello/django*reinhardt
 
-image::hello-django.png[hello-django, caption="http://localhost:8000/hello/django*reinhardt"]
+image::hello-django.png[hello-django, caption="http://localhost:8080/hello/django*reinhardt"]
 
 WARNING: s aucune _étoile_ n'est présente dans l'argument de l'url,
 le fonctionnement de `hello` devra rester conforme à l'attendu de la question précédente (soit "Hello Django (6 caractères)" si, par exemple, seule la valeur "Django" est transmise)
