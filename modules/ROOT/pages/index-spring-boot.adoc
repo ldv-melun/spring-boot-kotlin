@@ -10,6 +10,7 @@
 
 // Activation de la numérotaion des section :
 :sectnums:
+:tabsize: 2
 
 :toc: left
 :toclevels: 5
