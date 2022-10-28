@@ -49,6 +49,8 @@ _Spring Initializr_ permet de choisir les dépendances/frameworks à utiliser po
 ** `Apache Derby Database` ou `H2 Database` ou `PostgreSQL Driver` ou `MySQL Driver` : pour gérer les accès à une base de données SQL. Nécessaire pour `Spring Data JPA`.
 ** `Spring Security` : framework d'authentification et d'autorisation pour créer des applications sécurisées. Attention dès que ce composant est installé l'application demande une authentification.
 
+Exemple d'interactions d'une application web MVC (source : https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/mvc.html)[https://docs.spring.io]
+:image:mvc-doc.spring.io.png[]
 
 == Préparation de votre machine de dev
 

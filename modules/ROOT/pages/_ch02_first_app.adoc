@@ -170,7 +170,7 @@ class MainController { <1>
 <4> Ajoute une valeur au modèle. L'index `title` sert de clé pour y loger une valeur (ici la chaine de caractère _"Hello world !"_)
 <5> Nom du template associé, sans son extention `.html`
 
-.Un template simple (/src/main/templates/main/index.html)
+.Un template simple (/src/main/resources/templates/main/index.html)
 [source, thymeleaftemplatesfragmentexpressions]
 ----
 <!doctype html>
@@ -327,25 +327,28 @@ Pour extraire les parties variables de l'URL, nous les encadrons d'accolades et 
 .Exemple d'exploitation de données d'URL
 [source, kotlin]
 ----
-  @GetMapping("/question/edit/{id}") <1>
-  fun showUpdateForm(@PathVariable("id") id: Long,  <2>
-         model: Model): String {
-     val questionDto = questionService.findQuestionDtoById(id)
-     model["questionDto"] = questionDto
-     return "/question/add-update-question"
-  }
+  @GetMapping("/article/detail/{id}") <1>
+    fun detail(@PathVariable id: Long, model: Model): String { <2>
+        // println("id = ${id}")
+        val article : Article = articleRepository.findById(id).orElse(
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"))
+
+        model["title"] = "Article"
+        model["article"] = article
+
+        return "article/detail"
+    }
 ----
 
 <1> La route contient une partie *variable*, placé entre accolades `{  }` (ici _id_ est le nom du paramètre). Exemples d'arguments : `/question/edit/42` ou `/question/edit/352`.
 
-<2> Reprise de la partie variable de l'url comme *paramètre typé* de la méthode (attention, la correspondance se base sur le *nom* inscrit entre { } dans la route)
+<2> Reprise de la partie variable de l'url comme *paramètre typé* (Long, String, ...) de la méthode (attention, la correspondance se base sur le *nom* inscrit entre { } dans la route)
 
 Il est dans ce cas très facile de récupérer les valeurs en question, car elles sont passées automatiquement en tant qu'argument de la méthode !
 
 == Travaux Pratiques - Le contrôleur et la vue (initiation)
 
 WARNING: Attention à bien respecter les conventions de nommage https://kotlinlang.org/docs/coding-conventions.html
-
 
 ====
 [start=1]
