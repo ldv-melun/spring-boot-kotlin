@@ -328,17 +328,17 @@ Pour extraire les parties variables de l'URL, nous les encadrons d'accolades et 
 .Exemple d'exploitation de données d'URL
 [source, kotlin]
 ----
- @GetMapping("/article/detail/{id}") <1>
-   fun detail(@PathVariable id: Long, model: Model): String { <2>
-      // println("id = ${id}")
-      val article : Article = articleRepository.findById(id).orElse(
-         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"))
+   @GetMapping("/article/detail/{id}")<1>
+    fun detail(@PathVariable id: Long, model: Model): String { <2>
+        // println("id = ${id}")
+        val article : Article = articleRepository.findByIdOrNull(id)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found")
 
-      model["title"] = "Article"
-      model["article"] = article
+        model["title"] = "Article"
+        model["article"] = article
 
-      return "article/detail"
-  }
+        return "article/detail"
+    }
 ----
 
 <1> La route contient une partie *variable*, placé entre accolades `{  }` (ici _id_ est le nom du paramètre). Exemples d'arguments : `/question/edit/42` ou `/question/edit/352`.
