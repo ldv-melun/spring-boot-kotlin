@@ -1,8 +1,5 @@
 = Introduction à JPA
-ifndef::backend-pdf[]
-:imagesdir: images
-endif::[]
-
+:toc:
 
 == Présentation
 
@@ -36,11 +33,11 @@ lastname
 description
 }
 
-Article" * " - "author 1" Person :"\t\t\t\t"
+Article" * " - "credited 1" Person :"\t\t\t\t\t"
 
 ----
 
-Dans ce modèle une personne peut écrire plusieurs articles (liste de type `Article`), et un article est écrit par un seul auteur (de type `Person`).
+Dans ce modèle une personne peut écrire plusieurs articles (liste de type `Article`), et un article est crédité par une seule source (de type `Person`).
 
 Une application JPA se divise en deux parties :
 
@@ -97,9 +94,19 @@ l'interdiction de nullité, la longueur, le type...
 <6> `@GeneratedValue` indique que la valeur est générée automatiquement
 <7> Bien que la colonne associée soit déclarée non nullable (c'est une PK), la propriété `id` l'est ! (son type est `Long?`) En effet, à la création d'un *nouvel* objet en mémoire, alors qu'il n'est pas encore persisté (associé à aucune ligne dans la table), l'objet n'a pas encore de valeur d'identifiant de base de données. Cette valeur lui sera attribuée par le SGBD lors de sa sauvegarde dans la base (donc dans un second temps)
 
+[IMPORTANT]
+====
+Le mécanisme qui assure la correspondance entre une Classe Entity et une Table d'une base de données est appelé *ORM* (_Object Relational Mapping_)
+
+_Un mapping objet-relationnel (en anglais object-relational mapping ou ORM) est un type de programme informatique qui se place en interface entre un programme applicatif et une base de données relationnelle pour simuler une base de données orientée objet. Ce programme définit des correspondances entre les schémas de la base de données et les classes du programme applicatif. On pourrait le désigner par là, « comme une couche d'abstraction entre le monde objet et monde relationnel ». Du fait de sa fonction, on retrouve ce type de programme dans un grand nombre de frameworks sous la forme de composant ORM qui a été soit développé, soit intégré depuis une solution externe._ source : https://fr.wikipedia.org/wiki/Mapping_objet-relationnel
+
+Ainsi, à une *instance* d'une classe Entity correspond une *ligne* d'une table d'une base de données relationnelle.
+
+====
+
 === Gérer les associations (`ManyToOne` et `OneToMany`)
 
-Dans ce modèle un Person peut écrire plusieurs articles, et un article est écrit par une seule personne, son auteur.
+Dans ce modèle un Person peut écrire plusieurs articles, et un article est crédité par une seule personne.
 
 .Modèle d'analyse du domaine
 [plantuml]
@@ -120,7 +127,7 @@ lastname
 description
 }
 
-Article" * " - "author 1" Person :"\t\t\t\t"
+Article" * " - "creditedTo 1" Person :"\t\t\t\t"
 
 ----
 
@@ -138,8 +145,8 @@ class Article(
     var content: String,
 
     @ManyToOne <1>
-    @JoinColumn(name = "author_id") <2>
-    var author: Person, <3>
+    @JoinColumn(name = "credited_to_id") <2>
+    var creditedTo: Person, <3>
 
     var slug: String = title.toSlug(),
     var addedAt: LocalDateTime = LocalDateTime.now(),
@@ -148,13 +155,13 @@ class Article(
 ----
 <1> L'annotation `@ManyToOne` permet de savoir que l'objet annoté doit être retrouvé dans une autre table. Le paramètre `FetchType` permet de savoir s'il faut immédiatement retrouver l'objet lié (`EAGER`) ou s'il faut le retrouver seulement lorsqu'il est accédé dans l'application (`LAZY`). La deuxième option diffère la requête SQL jusqu'à ce que l'application cherche à accéder à l'objet Person
 <2> L'annotation `@JoinColumn` permet à l'application de déterminer quelle colonne dans la table sert de clé étrangère pour retrouver l'objet lié
-<3> Si `author_id` est une clé étrangère et un entier, la propriété associée, nommée `author`, est de type `*Person*`.
+<3> Si `credited_to_id` est une clé étrangère et un entier, la propriété associée, nommée `creditedTo`, est de type `*Person*`.
 
 [IMPORTANT]
 ====
 Ne pas confondre clé étrangère et propriété de l'association.
 
-`author_id` est le nom de la colonne dans la table (une clé étrangère), la propriété `author` qui lui est associée est de type `Person`.
+`credited_to_id` est le nom de la colonne dans la table (une clé étrangère), la propriété `creditedTo` lie une instance d'`Article` à une instance de `Person`.
 
 *Avec JPA le développeur gère un graphe d'objets, pas une base de données SQL.*
 ====
@@ -178,7 +185,7 @@ class Person(
     @Column(columnDefinition="TEXT")
     var description: String? = null,
 
-    @OneToMany(mappedBy = "author", cascade = [CascadeType.ALL]) <1>
+    @OneToMany(mappedBy = "creditedTo", cascade = [CascadeType.ALL]) <1>
     var articles: MutableList<Article> = mutableListOf(), <2>
 
     @Id
@@ -187,14 +194,14 @@ class Person(
     var id: Long? = null)
 
 ----
-<1> `@OneToMany` indique qu'une instance de `Person` peut être liée à plusieurs instances de `Article`, en tant qu'auteur, c'est la propriété `author` dans `Article` qui représente ce lien
+<1> `@OneToMany` indique qu'une instance de `Person` peut être liée à plusieurs instances de `Article`, en tant qu'auteur, c'est la propriété `creditedTo` dans `Article` qui représente ce lien
 <2> Une personne pouvant réaliser plusieurs articles, les références à ses articles sont stockés dans une collection mutable, qui peut être vide.
 
 == Gérer l'accès aux données, les dépôts (repositories)
 
 === Présentation
 
-Si les classes Entity permettent de définir les structures de données et la façon dont les objets sont liés aux tables SQL, elles ne permettent pas de manipuler les tables : créer, lire, mettre à jour ou supprimer des données. En anglais ces actions sont connues sous le nom de `CRUD` (Create, Read, Update, Delete). Les objets qui permettent de faire des opérations de type `CRUD` sur une base de données sont appelés des DAO (Data Access Object).
+Si les classes Entity permettent de définir les structures de données et la façon dont les objets sont liés aux tables SQL, elles ne permettent pas de manipuler les tables : créer, lire, mettre à jour ou supprimer des données. En anglais ces actions sont connues sous le nom de `CRUD` (_Create_, _Read_, _Update_, _Delete_). Les objets qui permettent de faire des opérations de type `CRUD` sur une base de données sont appelés des DAO (Data Access Object).
 
 Créer des DAOs est une tâche répétitive et ingrate, 90% du code est
 similaire d'un DAO à l'autre. Spring propose une méthode standard pour
@@ -232,10 +239,11 @@ interface PersonRepository : CrudRepository<Person, Long> {
 
 ----
 
-L'implémentation de l'interface est réalisée automatiquement par le framework.
+TIP: L'implémentation de l'interface est réalisée *automatiquement* par le framework.
 
-== Configurer un projet Spring Boot pour utiliser JPA
+== Exemple de configuration d'un projet Spring Boot avec JPA
 
+.Exemple avec H2 (src/main/resources/application.properties)
 [source,properties]
 ----
 
@@ -260,3 +268,13 @@ spring.h2.console.enabled=true <8>
 <7> Si un fichier `data.sql`est présent, il est automatiquement utilisé pour importer les données qu'il contient dans la base de données
 <8> Propre à `H2` (driver par défaut). Permet d'accéder à la console H2, une fois que l'application lancée, à l'URL `http://localhost:8080/h2-console`, il s'agit d'une application web intégrée au moteur H2 permettant de manipuler la base de données.
 
+
+Voici un exemple avec MysSql : https://spring.io/guides/gs/accessing-data-mysql/
+
+== Travaux pratiques
+
+Vous étudiez un début d'application web, structurée en couches minimales, et vous réalisez les travaux attendus.
+
+Les explications et le travail à faire se trouvent dans le README.adoc du projet.
+
+https://github.com/ldv-melun/app-spring-boot-kotlin-jpa-first
