@@ -47,7 +47,7 @@ Une fois téléchargé, décompressez-le dans un dossier `projets`, puis ouvrir 
  ├── pom.xml <1>
  └── src
      ├── main
-     │   ├── java
+     │   ├── kotlin
      │   │   └── fr
      │   │       └── vincimelun
      │   │           └── sbfirst
@@ -57,7 +57,7 @@ Une fois téléchargé, décompressez-le dans un dossier `projets`, puis ouvrir 
      │       ├── static <4>
      │       └── templates <5>
      └── test
-         └── java
+         └── kotlin
              └── fr
                  └── vincimelun
                      └── sbfirst
