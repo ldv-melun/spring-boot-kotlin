@@ -256,6 +256,7 @@ Intégrer bootstrap dans votre application existante, avec le modèle `navbar-st
 
 image:sbfirst-webjars-bootstrap-nav.png[sbfirst-webjars-bootstrap-nav.png]
 
-=== Exercice 2
-
-TODO
+//
+// === Exercice 2
+//
+// TODO
