@@ -201,7 +201,30 @@ Lancer l'application et tester : `localhost:8080/`
 
 image:sbfirst-localhost8080.png[localhost8080]
 
-Maintenant que nous avons vu comment concevoir un contrôleur et une vue associée, interessons-nous à la gestion des données transmises (initiation)
+[NOTE]
+====
+Certains contrôleurs ne répondent pas au client HTTP avec du contenu HTML. Dans ce cas, la méthode peut se charger de retourner directement du contenu, qu'il faut alors typer (sans passer par un objet Model ni View). Exemple.
+
+.Exemple : Retourne directement une simple chaîne de caractères
+[source, kotlin]
+----
+@GetMapping("/hello")
+@ResponseBody <1>
+fun hello(response: HttpServletResponse, request: HttpServletRequest): String {
+    response.contentType = "text/plain" <2>
+    response.characterEncoding = "UTF-8"
+    var nom: String = request.getParameter("nom") ?: "Inconnu"
+    return "Hello $nom\n"
+}
+----
+<1> La méthode prévient le contrôleur principal qu'elle se charge de répondre directement, sans passer par un objet Model et View.
+<2> Prévenir le client du **type de document retourné**, comme, par exemple, `text`, `audio`, `video`, `image`...
++
+Voir : https://stackoverflow.com/questions/23714383/what-are-all-the-possible-values-for-http-content-type-header[stackoverflow http-content-type-header] et
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type[developer.mozilla.org]
+====
+
+Maintenant que nous avons vu comment concevoir un contrôleur et une vue associée, intéressons-nous à la gestion des données transmises (initiation)
 
 == Gérer les données d'entrée
 
