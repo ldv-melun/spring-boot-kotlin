@@ -138,7 +138,7 @@ Voir aussi `File>Settings>Proxy`
 Voir aussi `File>Invalide Caches...` puis `restart`
 
 
-== Un contrôleur et vue Thymeleaf+HTML
+== Un contrôleur avec Model et View (Thymeleaf+HTML)
 
 Un contrôleur est une classe qui est annotée avec `@Controller` et qui contient des méthodes associées à des URI, ces methodes peuvent être associée à des annotations comme `@GetMapping`, `@PostMapping`, ... ou `@RequestMapping` plus générique. Les paramètres passés à ces méthodes sont variables et interprêtés par le moteur de Spring MVC.
 
@@ -201,8 +201,8 @@ Lancer l'application et tester : `localhost:8080/`
 
 image:sbfirst-localhost8080.png[localhost8080]
 
-[NOTE]
-====
+== Un contrôleur sans Model ni View
+
 Certains contrôleurs ne répondent pas au client HTTP avec du contenu HTML. Dans ce cas, la méthode peut se charger de retourner directement du contenu, qu'il faut alors typer (sans passer par un objet Model ni View). Exemple.
 
 .Exemple : Retourne directement une simple chaîne de caractères
@@ -222,11 +222,11 @@ fun hello(response: HttpServletResponse, request: HttpServletRequest): String {
 +
 Voir : https://stackoverflow.com/questions/23714383/what-are-all-the-possible-values-for-http-content-type-header[stackoverflow http-content-type-header] et
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type[developer.mozilla.org]
-====
 
-Maintenant que nous avons vu comment concevoir un contrôleur et une vue associée, intéressons-nous à la gestion des données transmises (initiation)
 
 == Gérer les données d'entrée
+
+Maintenant que nous avons vu comment concevoir un contrôleur et une vue associée, intéressons-nous à la gestion des données transmises (initiation)
 
 Conformément à l'architecture applicative 3 tiers web, c'est une méthode dite _contrôleur_ qui prend en charge l'exploitation des données transmises par le client HTTP (le tiers distant qui est à l'origine de l'interaction)
 
