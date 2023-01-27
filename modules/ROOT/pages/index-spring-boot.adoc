@@ -22,4 +22,4 @@ include::_ch01_intro_spring.adoc[leveloffset=+1]
 include::_ch02_first_app.adoc[leveloffset=+1]
 include::_ch03_layout-intro.adoc[leveloffset=+1]
 include::_ch04_jpa_intro.adoc[leveloffset=+1]
-include::_ch_spring_security.adoc[leveloffset=+1]
+
